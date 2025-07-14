@@ -19,5 +19,9 @@ fun main() {
 
 ## Todo
 
-- Write entrypoint so we can pipe data as a CLI tool (e.g. `./csv-parser < foo.csv > foo.json`)
 - Write build / test / release actions
+  - Linux & Mac
+- Write install script
+- Update usage to include CLI
+- Add option for csv without header
+- Add option for pretty json output
