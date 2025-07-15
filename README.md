@@ -13,7 +13,12 @@ import buzz.angus.CsvParser
 
 fun main() {
     val parser = CsvParser()
-    val result = parser.parse(File("foo.csv").readText())
+    
+    // Assuming the first csv row is a header
+    val resultWithHeader = parser.parseWithHeader(File("foo.csv").readText())
+    
+    // Or if your csv has no header row
+    val resultWithoutHeader = parser.parseWithoutHeader(File("foo.csv").readText())
 }
 ```
 
@@ -23,5 +28,3 @@ fun main() {
   - Linux & Mac
 - Write install script
 - Update usage to include CLI
-- Add option for csv without header
-- Add option for pretty json output

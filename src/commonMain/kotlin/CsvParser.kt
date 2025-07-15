@@ -7,8 +7,18 @@ enum class CsvSpanType {
 }
 
 class CsvParser {
-    fun parse(csvDocument: String): List<Map<String, String>> {
-        val objects = mutableListOf<Map<String, String>>()
+    fun parseWithHeader(csvDocument: String): List<Map<String, String>> {
+        val (rows, header) = parse(csvDocument)
+        return rows.map{row -> header!!.zip(row).toMap()}
+    }
+
+    fun parseWithoutHeader(csvDocument: String): List<List<String>> {
+        val (rows, _) = parse(csvDocument, noHeader = true)
+        return rows
+    }
+
+    internal fun parse(csvDocument: String, noHeader: Boolean = false): Pair<List<List<String>>, List<String>?> {
+        val rows = mutableListOf<MutableList<String>>()
         val charIterator = csvDocument.iterator()
 
         var header: List<String>? = null
@@ -22,14 +32,14 @@ class CsvParser {
             spanType = CsvSpanType.NONE
         }
 
-        fun recordCurrentObject() {
+        fun recordCurrentRow() {
             recordCurrentValue()
-            if (header == null) {
+            if (!noHeader && header == null) {
                 header = values
                 values = mutableListOf()
                 return
             }
-            objects.add(header.zip(values).toMap())
+            rows.add(values)
             values = mutableListOf()
         }
 
@@ -40,7 +50,7 @@ class CsvParser {
                     when (char) {
                         ',' -> recordCurrentValue()
                         '"' -> spanType = CsvSpanType.QUOTED
-                        '\n' -> recordCurrentObject()
+                        '\n' -> recordCurrentRow()
                         else -> {
                             buf.append(char)
                             spanType = CsvSpanType.UNQUOTED
@@ -51,7 +61,7 @@ class CsvParser {
                 CsvSpanType.UNQUOTED -> {
                     when (char) {
                         ',' -> recordCurrentValue()
-                        '\n' -> recordCurrentObject()
+                        '\n' -> recordCurrentRow()
                         else -> buf.append(char)
                     }
                 }
@@ -63,7 +73,7 @@ class CsvParser {
                                 when (charIterator.next()) {
                                     '"' -> buf.append('"')
                                     ',' -> recordCurrentValue()
-                                    '\n' -> recordCurrentObject()
+                                    '\n' -> recordCurrentRow()
                                     else -> error("Unexpected character between closing quote and comma")
                                 }
                             }
@@ -75,7 +85,7 @@ class CsvParser {
             }
         }
 
-        recordCurrentObject()
-        return objects
+        recordCurrentRow()
+        return Pair(rows, header)
     }
 }

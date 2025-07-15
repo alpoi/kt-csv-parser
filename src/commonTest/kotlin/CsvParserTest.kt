@@ -6,13 +6,13 @@ class CsvParserTest {
     private val csvParser = CsvParser()
 
     @Test
-    fun `parse handles unquoted csv spans`() {
+    fun `parseWithHeader handles unquoted csv spans`() {
         val data = """
             name,age,department
             John Smith,28,Engineering
         """.trimIndent()
 
-        val parsed = csvParser.parse(data)
+        val parsed = csvParser.parseWithHeader(data)
         println(parsed)
         assertEquals(
             mapOf(
@@ -24,13 +24,13 @@ class CsvParserTest {
     }
 
     @Test
-    fun `parse handles quoted csv spans`() {
+    fun `parseWithHeader handles quoted csv spans`() {
         val data = """
             name,age,department
             "John Smith",28,"Engineering"
         """.trimIndent()
 
-        val parsed = csvParser.parse(data)
+        val parsed = csvParser.parseWithHeader(data)
         assertEquals(
             mapOf(
                 "name" to "John Smith",
@@ -41,7 +41,7 @@ class CsvParserTest {
     }
 
     @Test
-    fun `parse handles complex csv spans`() {
+    fun `parseWithHeader handles complex csv spans`() {
         val data = """
             "Name","Age","Bio","Favorite Quote","Data"
             "John ""Johnny"" O'Connor",25,"Software Engineer
@@ -83,7 +83,7 @@ class CsvParserTest {
             Final paragraph.","His favorite saying: ""Don't put all your eggs in one basket, unless it's a really good basket.""${'"'},"Array: [""item1"", ""item2"", ""item3""]"
         """.trimIndent()
 
-        val parsed = csvParser.parse(data)
+        val parsed = csvParser.parseWithHeader(data)
 
         assertEquals(
             mapOf(
@@ -168,6 +168,28 @@ class CsvParserTest {
                 "Favorite Quote" to "His favorite saying: \"Don't put all your eggs in one basket, unless it's a really good basket.\"",
                 "Data" to "Array: [\"item1\", \"item2\", \"item3\"]"
             ), parsed[3]
+        )
+    }
+
+    @Test
+    fun `parseWithoutHeader handles complex csv spans`() {
+        val data = """
+            "John Smith",28,"Engineering","
+            foo
+            bar
+            ""baz""${'"'}
+        """.trimIndent()
+
+        val parsed = csvParser.parseWithoutHeader(data)
+
+        assertEquals(
+            listOf(
+                "John Smith",
+                "28",
+                "Engineering",
+                "\nfoo\nbar\n\"baz\""
+            ),
+            parsed[0]
         )
     }
 }
