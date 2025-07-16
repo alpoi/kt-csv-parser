@@ -32,13 +32,10 @@ jobs:
         include:
           - os: ubuntu-latest
             target: linuxX64
-            extension: kexe
           - os: macos-14-large
             target: macosX64
-            extension: klib
           - os: macos-14
             target: macosArm64
-            extension: klib
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -54,8 +51,8 @@ jobs:
       - name: Package native binary
         run: |
           mkdir -p artifacts
-          ls build/bin/*/*/*
-          cp build/bin/${{ matrix.target }}/releaseExecutable/${{ env.TOOL_NAME }}.${{ matrix.extension }} artifacts/${{ env.TOOL_NAME }}
+          strip -x build/bin/${{ matrix.target }}/releaseExecutable/${{ env.TOOL_NAME }}.kexe
+          cp build/bin/${{ matrix.target }}/releaseExecutable/${{ env.TOOL_NAME }}.kexe artifacts/${{ env.TOOL_NAME }}
           zip -j artifacts/${{ env.TOOL_NAME }}-${{ matrix.target }}.zip artifacts/${{ env.TOOL_NAME }}
 
       - name: Upload artifact for ${{ matrix.target }}
