@@ -61,6 +61,7 @@ jobs:
         run: |
           mkdir -p artifacts
           ls build/bin/*/*/*
+          exit 1
           cp build/bin/${{ matrix.target }}/releaseExecutable/${{ env.TOOL_NAME }}.* artifacts
           zip -j artifacts/${{ env.TOOL_NAME }}-${{ matrix.target }}-${NEW_VERSION}.zip artifacts/${{ env.TOOL_NAME }}
 
