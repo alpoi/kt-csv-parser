@@ -53,13 +53,12 @@ jobs:
           mkdir -p artifacts
           strip -x build/bin/${{ matrix.target }}/releaseExecutable/${{ env.TOOL_NAME }}.kexe
           cp build/bin/${{ matrix.target }}/releaseExecutable/${{ env.TOOL_NAME }}.kexe artifacts/${{ env.TOOL_NAME }}
-          zip -j artifacts/${{ env.TOOL_NAME }}-${{ matrix.target }}.zip artifacts/${{ env.TOOL_NAME }}
 
       - name: Upload artifact for ${{ matrix.target }}
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.TOOL_NAME}}-${{ matrix.target }}.zip
-          path: artifacts/${{ env.TOOL_NAME }}-${{ matrix.target }}.zip
+          name: ${{ env.TOOL_NAME}}-${{ matrix.target }}
+          path: artifacts/${{ env.TOOL_NAME }}-${{ matrix.target }}
 
   release:
     name: 🚀 Create GitHub Release
@@ -90,4 +89,4 @@ jobs:
         with:
           tag: v${{ env.NEW_VERSION }}
           name: Release v${{ env.NEW_VERSION }}
-          artifacts: artifacts/*.zip
+          artifacts: artifacts/*
