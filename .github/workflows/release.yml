@@ -58,7 +58,7 @@ jobs:
       - name: Upload artifact for ${{ matrix.target }}
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.TOOL_NAME}}-${{ matrix.target }}-binary
+          name: ${{ env.TOOL_NAME}}-${{ matrix.target }}.zip
           path: artifacts/${{ env.TOOL_NAME }}-${{ matrix.target }}.zip
 
   release:
@@ -70,10 +70,6 @@ jobs:
 
       - name: Increment version
         run: ./scripts/increment-version.sh ${{ github.event.inputs.bump }}
-
-      - name: Set version output
-        id: set_version
-        run: echo "new_version=${NEW_VERSION}" >> $GITHUB_OUTPUT
 
       - name: Commit and tag changes
         run: |
@@ -92,6 +88,6 @@ jobs:
       - name: Create release with artifacts
         uses: ncipollo/release-action@v1
         with:
-          tag: v${NEW_VERSION}
-          name: Release v${NEW_VERSION}
+          tag: v${{ env.NEW_VERSION }}
+          name: Release v${{ env.NEW_VERSION }}
           artifacts: artifacts/*.zip

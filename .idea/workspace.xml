@@ -7,8 +7,6 @@
     <list default="true" id="2df4bfc6-544a-42b9-b679-deb9069efccd" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.github/workflows/release.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/release.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/artifacts/csv-parse" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/artifacts/csv-parse-linuxX64-0.2.0.zip" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -176,7 +174,7 @@
       <workItem from="1752673332627" duration="3000" />
       <workItem from="1752673372136" duration="5777000" />
       <workItem from="1752679368212" duration="1000" />
-      <workItem from="1752679404939" duration="2515000" />
+      <workItem from="1752679404939" duration="2943000" />
     </task>
     <servers />
   </component>
