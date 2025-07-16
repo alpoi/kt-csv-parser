@@ -60,7 +60,7 @@ jobs:
       - name: Package native binary
         run: |
           mkdir -p artifacts
-          cp build/bin/${{ matrix.target }}/${{ env.TOOL_NAME }}.* artifacts/${{ env.TOOL_NAME }}
+          cp build/bin/${{ matrix.target }}/releaseExecutable/${{ env.TOOL_NAME }}.* artifacts/${{ env.TOOL_NAME }}
           zip -j artifacts/${{ env.TOOL_NAME }}-${{ matrix.target }}-${NEW_VERSION}.zip artifacts/${{ env.TOOL_NAME }}
 
       - name: Upload artifact for ${{ matrix.target }}
