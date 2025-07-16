@@ -1,7 +1,8 @@
 set -euo pipefail
 
 detect_target() {
-  local os, arch
+  local os
+  local arch
 
   os="$(uname | tr '[:upper:]' '[:lower:]')"
   arch="$(uname -m)"
