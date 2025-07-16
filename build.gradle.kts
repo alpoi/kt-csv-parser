@@ -1,5 +1,5 @@
 group = "buzz.angus"
-version = "0.3.0"
+version = "0.3.1"
 
 plugins {
     kotlin("multiplatform") version "2.2.0"
