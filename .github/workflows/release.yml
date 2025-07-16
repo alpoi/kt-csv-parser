@@ -58,7 +58,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.TOOL_NAME}}-${{ matrix.target }}
-          path: artifacts/${{ env.TOOL_NAME }}-${{ matrix.target }}
+          path: artifacts/${{ env.TOOL_NAME }}
 
   release:
     name: 🚀 Create GitHub Release
