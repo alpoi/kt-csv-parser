@@ -15,5 +15,6 @@ major)
     ;;
 esac
 NEW_VERSION="$major.$minor.$patch"
-echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+echo "NEW_VERSION=$NEW_VERSION" >> "$GITHUB_ENV"
 perl -pi -e "s|version = \"$CURRENT_VERSION\"|version = \"$NEW_VERSION\"|" build.gradle.kts
+perl -pi -e "s|VERSION=$CURRENT_VERSION|version=$NEW_VERSION" ./scripts/install.sh

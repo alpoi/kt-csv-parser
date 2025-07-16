@@ -24,5 +24,4 @@ fun main() {
 
 ## Todo
 
-- Write install script
 - Update usage to include CLI
