@@ -46,10 +46,8 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
 
       - name: Build native binary
-        run: ./gradlew linkReleaseExecutable${{ matrix.target }}
-
-      - name: Package native binary
         run: |
+          ./gradlew linkReleaseExecutable${{ matrix.target }}
           mkdir -p artifacts
           strip -x build/bin/${{ matrix.target }}/releaseExecutable/${{ env.TOOL_NAME }}.kexe
           cp build/bin/${{ matrix.target }}/releaseExecutable/${{ env.TOOL_NAME }}.kexe artifacts/${{ env.TOOL_NAME }}
@@ -84,9 +82,15 @@ jobs:
         with:
           path: artifacts
 
-      - name: Create release with artifacts
+      - name: Package release artifacts
+        run: |
+          for DIR in artifacts/csv-parse-*; do
+            PLATFORM="${DIR##*/csv-parse-}"
+            zip -j artifacts/csv-parse-$PLATFORM-v$NEW_VERSION.zip $DIR/csv-parse
+          done
+
+      - name: Create release
         uses: ncipollo/release-action@v1
         with:
           tag: v${{ env.NEW_VERSION }}
-          name: Release v${{ env.NEW_VERSION }}
-          artifacts: artifacts/*/*
+          artifacts: artifacts/*.zip
