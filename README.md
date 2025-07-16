@@ -24,7 +24,5 @@ fun main() {
 
 ## Todo
 
-- Write build / test / release actions
-  - Linux & Mac
 - Write install script
 - Update usage to include CLI
