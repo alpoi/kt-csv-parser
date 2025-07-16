@@ -89,4 +89,4 @@ jobs:
         with:
           tag: v${{ env.NEW_VERSION }}
           name: Release v${{ env.NEW_VERSION }}
-          artifacts: artifacts/*
+          artifacts: artifacts/*/*
