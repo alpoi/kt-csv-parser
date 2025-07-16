@@ -45,6 +45,8 @@ jobs:
           distribution: temurin
           java-version: 21
 
+      - uses: gradle/actions/setup-gradle@v4
+
       - name: Increment version
         run: ./scripts/increment-version.sh ${{ github.event.inputs.bump }}
 
@@ -58,7 +60,7 @@ jobs:
       - name: Package native binary
         run: |
           mkdir -p artifacts
-          cp build/bin/${{ matrix.target }}/${{ env.TOOL_NAME }}.kexe artifacts/${{ env.TOOL_NAME }}
+          cp build/bin/${{ matrix.target }}/${{ env.TOOL_NAME }}.* artifacts/${{ env.TOOL_NAME }}
           zip -j artifacts/${{ env.TOOL_NAME }}-${{ matrix.target }}-${NEW_VERSION}.zip artifacts/${{ env.TOOL_NAME }}
 
       - name: Upload artifact for ${{ matrix.target }}
