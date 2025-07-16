@@ -1,4 +1,4 @@
-CURRENT_VERSION=$(grep -oP '(?<=version = ")[^"]*' build.gradle.kts)
+CURRENT_VERSION=$(sed -n 's/.*version = "\([^"]*\)".*/\1/p' build.gradle.kts)
 IFS='.' read -r major minor patch <<< "$CURRENT_VERSION"
 case "$1" in
 patch)
@@ -16,4 +16,4 @@ major)
 esac
 NEW_VERSION="$major.$minor.$patch"
 echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
-sed -i "s|version = \"$CURRENT_VERSION\"|version = \"$NEW_VERSION\"|" build.gradle.kts
+sed -i '' "s|version = \"$CURRENT_VERSION\"|version = \"$NEW_VERSION\"|" build.gradle.kts
