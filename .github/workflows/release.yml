@@ -54,6 +54,7 @@ jobs:
       - name: Package native binary
         run: |
           mkdir -p artifacts
+          ls build/bin/*/*/*
           cp build/bin/${{ matrix.target }}/releaseExecutable/${{ env.TOOL_NAME }}.${{ matrix.extension }} artifacts/${{ env.TOOL_NAME }}
           zip -j artifacts/${{ env.TOOL_NAME }}-${{ matrix.target }}.zip artifacts/${{ env.TOOL_NAME }}
 
