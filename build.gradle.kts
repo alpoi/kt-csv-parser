@@ -1,11 +1,9 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinNativeLink
-
 group = "buzz.angus"
-version = "1.0-SNAPSHOT"
+version = "0.1.0"
 
 plugins {
     kotlin("multiplatform") version "2.2.0"
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.0"
+    kotlin("plugin.serialization") version "2.2.0"
 }
 
 repositories {
@@ -13,12 +11,11 @@ repositories {
 }
 
 kotlin {
-    linuxX64 {
-        binaries {
-            executable {
-                entryPoint = "buzz.angus.main"
-                baseName = "csvparse"
-            }
+    val targets = listOf(linuxX64(), macosX64(), macosArm64())
+    targets.forEach {
+        target -> target.binaries.executable {
+            entryPoint = "buzz.angus.main"
+            baseName = "csv-parse"
         }
     }
 
@@ -30,13 +27,4 @@ kotlin {
             }
         }
     }
-}
-
-val linkTask = tasks.named<KotlinNativeLink>("linkReleaseExecutableLinuxX64")
-
-tasks.register<Copy>("packageRelease") {
-    dependsOn("linkReleaseExecutableLinuxX64")
-    from(linkTask.map { it.outputFile })
-    into(layout.projectDirectory.dir("dist"))
-    rename { "csvparse" }
 }

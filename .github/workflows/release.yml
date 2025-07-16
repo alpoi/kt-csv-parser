@@ -1,0 +1,95 @@
+name: Build and Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Type of version bump
+        required: true
+        default: patch
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+env:
+  TOOL_NAME: csv-parse
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build native binary for ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    outputs:
+      new_version: ${{ steps.set_version.outputs.new_version }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: linuxX64
+          - os: macos-14-large
+            target: macosX64
+          - os: macos-14
+            target: macosArm64
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Increment version
+        run: ./scripts/increment-version.sh ${{ github.event.inputs.bump }}
+
+      - name: Set version output
+        id: set_version
+        run: echo "new_version=${NEW_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Build native binary
+        run: ./gradlew linkReleaseExecutable${{ matrix.target }}
+
+      - name: Package native binary
+        run: |
+          mkdir -p artifacts
+          cp build/bin/${{ matrix.target }}/${{ env.TOOL_NAME }}.kexe artifacts/${{ env.TOOL_NAME }}
+          zip -j artifacts/${{ env.TOOL_NAME }}-${{ matrix.target }}-${NEW_VERSION}.zip artifacts/${{ env.TOOL_NAME }}
+
+      - name: Upload artifact for ${{ matrix.target }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.TOOL_NAME}}-${{ matrix.target }}-${NEW_VERSION}-binary
+          path: artifacts/${{ env.TOOL_NAME }}-${{ matrix.target }}-${NEW_VERSION}.zip
+
+      - name: Commit and tag changes
+        run: |
+          git config --global user.name "alpoi[bot]"
+          git config --global user.email "me@angus.buzz"
+          git add .
+          git commit -m "🚀 $NEW_VERSION"
+          git push origin main
+          git tag -a "v$NEW_VERSION" -m "🚀 $NEW_VERSION"
+          git push origin "v$NEW_VERSION"
+
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create release with artifacts
+        uses: ncipollo/release-action@v1
+        with:
+          tag: v${{ needs.build.outputs.new_version }}
+          name: Release v${{ needs.build.outputs.new_version }}
+          artifacts: artifacts/*.zip
